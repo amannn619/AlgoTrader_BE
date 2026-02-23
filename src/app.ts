@@ -8,9 +8,11 @@ import { createServer } from 'http';
 dotenv.config();
 
 async function bootstrap() {
+
     await connectDB();
     const app = startApiServer();
     const server = createServer(app);
+    marketSession.initializeState();
     startWebSocketServer(server);
 
     const PORT = process.env.PORT || 3000;

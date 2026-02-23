@@ -53,7 +53,7 @@ export class MarketSession {
         const stocksConfig = JSON.parse(fs.readFileSync(path.join(__dirname, "../../config/tokenMaster.json"), "utf-8"));
 
         // 2. Initialize Market State (Prices)
-        await this.initializeState(stocksConfig);
+        // await this.initializeState(stocksConfig);
 
         // const bhavCopyService = new BhavCopyService();
         // const closingPriceMap = await bhavCopyService.loadClosingPrices(stocksConfig);
@@ -82,7 +82,11 @@ export class MarketSession {
         console.log("Market Session Started Successfully");
     }
 
-    private async initializeState(stocksConfig: StockInfo[]) {
+    public async initializeState() {
+
+        const stocksConfig: StockInfo[] = JSON.parse(fs.readFileSync(path.join(__dirname, "../../config/tokenMaster.json"), "utf-8"));
+
+
         const bhavCopyService = new BhavCopyService();
         const closingPriceMap = await bhavCopyService.loadClosingPrices(stocksConfig);
 

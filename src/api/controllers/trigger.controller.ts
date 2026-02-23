@@ -89,18 +89,19 @@ export class TriggerController {
       const limit = Number(req.query.limit ?? 0);
       const actionsParam = req.query.actons as string | undefined;
 
-      const latestTriggeres = await TriggerModel.aggregate([
-        {$sort: { timestamp: -1 }},
-        {$group: {
-          _id: '$symbol',
-          latestDoc: { $first: '$$ROOT' }
-        }},
-        {$replaceRoot: { newRoot: '$latestDoc' }},
-
+      const latestTriggers = await TriggerModel.aggregate([
+        { $sort: { timestamp: -1 } },
+        {
+          $group: {
+            _id: '$symbol',
+            latestDoc: { $first: '$$ROOT' }
+          }
+        },
+        { $replaceRoot: { newRoot: '$latestDoc' } },
       ]);
 
       const triggerMap = new Map();
-      latestTriggeres.forEach((trigger) => {
+      latestTriggers.forEach((trigger) => {
         triggerMap.set(trigger.symbol, trigger);
       })
 
@@ -111,17 +112,16 @@ export class TriggerController {
         ...triggerMap.keys()
       ])
 
-      let combonedList = Array.from(allSymbols).map(symbol => {
-        const activeStock = activeStocksMap.get(symbol);
+      let combinedList = Array.from(allSymbols).map(symbol => {
         const trigger = triggerMap.get(symbol);
-
-        const currentPrice = activeStock ? activeStock.currPrice : (trigger ? trigger.stockPrice : 0);
-        const basePrice = activeStock ? activeStock.basePrice : (trigger ? trigger.lastStockPrice : 0);
-
-        if(trigger) {
+        if (trigger) {
           return trigger;
         }
-        else{
+        else {
+
+          const activeStock = activeStocksMap.get(symbol);
+          const currentPrice = activeStock ? activeStock.currPrice : 0;
+          const basePrice = activeStock ? activeStock.basePrice : 0;
           return {
             symbol,
             action: "-",
@@ -139,16 +139,18 @@ export class TriggerController {
         }
       });
 
-      if(actionsParam) {
+      if (actionsParam) {
         const actions = actionsParam.split(',');
-        combonedList = combonedList.filter(item => actions.includes(item.action));
+        combinedList = combinedList.filter(item => actions.includes(item.action));
       }
 
-      const total = combonedList.length;
+      combinedList.sort((a, b) => a.symbol.localeCompare(b.symbol));
+
+      const total = combinedList.length;
       const start = page * limit;
       const end = start + limit;
-      const items = combonedList.slice(start, end);
-      
+      const items = combinedList.slice(start, end);
+
 
       res.json({ items, total })
     } catch (err) {
