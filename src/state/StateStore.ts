@@ -89,7 +89,7 @@ export class StateStore {
         if (snapshot.sensex) {
             this.sensex.currPrice = snapshot.sensex.currPrice
             this.sensex.basePrice = snapshot.sensex.basePrice;
-            this.sensex.lastDirection = snapshot.sensex.direction;
+            this.sensex.lastDirection = snapshot.sensex.lastDirection;
             this.sensex.lastTriggerTime = snapshot.sensex.lastTriggerTime;
             EventBus.emit("sensexUpdate", this.sensex);
         }
