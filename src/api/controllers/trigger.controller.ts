@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { TriggerModel } from '../../db/models/Trigger.model';
 import { marketSession } from './session.controller';
+import { SensexModel } from '../../db/models/Sensex.model';
 
 export class TriggerController {
 
@@ -156,6 +157,36 @@ export class TriggerController {
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: 'Failed to fetch triggers' });
+    }
+
+  }
+
+  static async getSensexTriggers(req: Request, res: Response) {
+    try {
+
+      const page = Number(req.query.page ?? 0);
+      const limit = Number(req.query.limit ?? 0);
+
+      const query: any = {};
+
+      const skip = page * limit;
+
+      const [items, total] = await Promise.all([
+        SensexModel
+          .find(query)
+          .sort({ timestamp: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+
+        SensexModel.countDocuments(query)
+      ])
+
+      res.json({ items, total })
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Failed to fetch Sensex History' });
     }
 
   }

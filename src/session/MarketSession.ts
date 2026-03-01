@@ -31,9 +31,9 @@ export class MarketSession {
     public constructor() {
         this.stateStore = new StateStore();
         this.strategyEngine = new StrategyEngine();
-        this.triggerEngine = new TriggerEngine(this.stateStore, this.strategyEngine);
         this.paperTrader = new PaperTrader();
         this.dbWriter = new DbWriter();
+        this.triggerEngine = new TriggerEngine(this.stateStore, this.strategyEngine, this.dbWriter);
 
         const dateStr = new Date().toISOString().slice(0, 10);
         this.triggerLogger = new FileLogger<TriggerEvent>(`triggers_${dateStr}.log`);

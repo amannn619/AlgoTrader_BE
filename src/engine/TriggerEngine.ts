@@ -5,11 +5,17 @@ import { StateStore } from "../state/StateStore";
 import { StrategyEngine } from "../strategy/StrategyEngine";
 import { TriggerEvent } from "./types";
 import { EventBus } from '../events/EventBus';
+import { DbWriter } from '../db/DBWriter';
 
 export class TriggerEngine {
 
-    public constructor(private state: StateStore, private strategy: StrategyEngine) {
-    }
+
+    public constructor(
+        private state: StateStore,
+        private strategy: StrategyEngine,
+        private dbWriter: DbWriter,
+    ) {
+}
 
     public processTick(tick: Tick, sensexPrice: number): TriggerEvent | null {
         // EventBus.emit("tick", tick);
@@ -19,6 +25,12 @@ export class TriggerEngine {
             const direction = this.strategy.evaluateSensex(tick.price, sensex.basePrice);
 
             if (direction !== "NEUTRAL") {
+                this.dbWriter.logSensex({
+                    currPrice: tick.price,
+                    basePrice: sensex.basePrice,
+                    lastDirection: direction,
+                    lastTriggerTime: tick.timestamp
+                });
                 this.state.updateSensex(tick.price, tick.price, direction, true);
             }
             else {
