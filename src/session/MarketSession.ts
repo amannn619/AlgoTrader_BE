@@ -24,8 +24,8 @@ export class MarketSession {
     private triggerEngine: TriggerEngine;
     private paperTrader: PaperTrader;
     private dbWriter: DbWriter;
-    private triggerLogger: FileLogger<TriggerEvent>;
-    private tradeLogger: TradeLogger;
+    // private triggerLogger: FileLogger<TriggerEvent>;
+    // private tradeLogger: TradeLogger;
 
 
     public constructor() {
@@ -36,8 +36,8 @@ export class MarketSession {
         this.triggerEngine = new TriggerEngine(this.stateStore, this.strategyEngine, this.dbWriter);
 
         const dateStr = new Date().toISOString().slice(0, 10);
-        this.triggerLogger = new FileLogger<TriggerEvent>(`triggers_${dateStr}.log`);
-        this.tradeLogger = new TradeLogger(`trades_${dateStr}.log`);
+        // this.triggerLogger = new FileLogger<TriggerEvent>(`triggers_${dateStr}.log`);
+        // this.tradeLogger = new TradeLogger(`trades_${dateStr}.log`);
     }
 
     async start(credentials: AngelCredentials): Promise<void> {
@@ -127,11 +127,11 @@ export class MarketSession {
 
         const triggerEvent = this.triggerEngine.processTick(tick, latestSensexPrice);
         if (triggerEvent) {
-            this.triggerLogger.log(triggerEvent);
+            // this.triggerLogger.log(triggerEvent);
             this.dbWriter.logTrigger(triggerEvent);
             const trade = this.paperTrader.handleEvent(triggerEvent);
             if (trade) {
-                this.tradeLogger.log(trade);
+                // this.tradeLogger.log(trade);
                 this.dbWriter.logTrade(trade);
                 console.log("TRADE EXECUTED:", trade);
             }
