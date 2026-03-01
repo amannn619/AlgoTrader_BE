@@ -32,7 +32,7 @@ export class MockMarketDataAdapter implements MarketDataAdapter {
 
         // Stock movements correlated with Sensex
         this.stocks.forEach(stock => {
-            const beta = 0.8 + Math.random() * 0.7; // 0.8 → 1.5
+            const beta = 0.8 + Math.random() * 0.2; // 0.8 → 1.5
             const noise = (Math.random() - 0.5) * 0.002;
 
             // const pctChange = sensexPctChange * beta + noise;
