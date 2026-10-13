@@ -7,9 +7,11 @@
     "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "//": "--- NEW COMMANDS ---",
-    "start:mock": "cross-env APP_ENV=MOCK ts-node src/app.ts",
-    "start:live": "cross-env APP_ENV=LIVE ts-node src/app.ts",
-    "dev": "cross-env APP_ENV=MOCK nodemon src/app.ts"
+    "start:mock": "cross-env APP_ENV=MOCK nodemon src/app.ts",
+    "start:live": "cross-env APP_ENV=LIVE nodemon src/app.ts",
+    "dev": "cross-env APP_ENV=MOCK nodemon src/app.ts",
+    "db:dump": "mongodump --uri=\"mongodb+srv://aman:Uchiha_69@cluster0.5oqicbu.mongodb.net/algotrader?appName=Cluster0\" --out=\"db_checkpoint\"",
+    "db:reset": "mongorestore --uri=\"mongodb://127.0.0.1:27017/algotrader\" --drop \"db_checkpoint/algotrader\""
   },
   "keywords": [],
   "author": "",

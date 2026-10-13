@@ -7,7 +7,7 @@ import { Tick } from "../market/types";
 import { Server } from "http";
 
 export function startWebSocketServer(server: Server) {
-    const wss = new WebSocket.Server({ server });
+    const wss = new WebSocket.Server({ port: 8081 });
 
     console.log(`Websocket running on`);
 
